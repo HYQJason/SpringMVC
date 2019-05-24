@@ -10,12 +10,10 @@ import springmvc.helloworld.bean.BaseResponse;
 import springmvc.helloworld.bean.Info;
 import springmvc.helloworld.service.BookService;
 
-import java.util.LinkedHashMap;
-
 @Controller
 @RequestMapping("/HiController")
 public class HiController {
-    LinkedHashMap
+
 //lazy 懒加载，延迟加载，第一次获取时加载
     // @Autowired  支持构造方法（如只有一个有参构造方法，可以省略Autowired），方法，属性 自动注入  根据类型查找，根据属性名查找.Qualifier 指定需要注入的。@Primary 指定首选的注入
     //Spring 支持使用@Resource (JSR250)和 @Inject(JSR330)都是java的注解规范 实现自动装配
@@ -51,14 +49,14 @@ public class HiController {
         return "index";
 
     }*/
-
+//返回jspview
     @RequestMapping(value = "/index/{data}", method = RequestMethod.GET)
     public ModelAndView index(@PathVariable(value = "data") String data) {
         ModelAndView model = new ModelAndView("index");
         model.addObject("data", data);
         return model;
     }
-
+    //返回jspview
     @RequestMapping(value = "/data", method = RequestMethod.GET)
     public ModelAndView getData(@RequestParam(value = "data") String data) {
         ModelAndView model = new ModelAndView("index");
@@ -68,7 +66,7 @@ public class HiController {
         model.addObject("data", bookService.getdata());
         return model;
     }
-
+    //返回jspview
     @RequestMapping("/say")
     public String say(Model model) {
         model.addAttribute("name", "百度"); // 指定Model的值
@@ -76,10 +74,10 @@ public class HiController {
         return "say";
 
     }
-
-    @RequestMapping("/info")
+//支持 提交对象，返回对象
+    @RequestMapping(value = "/info",method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse getInfo (@RequestBody Info info) {
+    public BaseResponse getInfo (@RequestBody Info info ) {
         System.out.print("--------------info--" + info);
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setCode(200);
@@ -87,8 +85,20 @@ public class HiController {
         baseResponse.setResponse(info);
         return baseResponse;
     }
+//支持GET，POST
+    @RequestMapping(value = "/getdata",method={RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public BaseResponse getdata (@RequestParam(name = "id") Integer id ,@RequestParam(name = "commodityName")String commodityName) {
+        System.out.print("--------------id--" + id);
+        System.out.print("--------------commodityName--" + commodityName);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setCode(200);
+        baseResponse.setMessage("200");
+        baseResponse.setResponse(new Info(20,"阿里"));
+        return baseResponse;
+    }
 
-
+    //返回jspview
     @RequestMapping(value = "getuser", method = RequestMethod.GET)
     public String getUser(ModelMap modelMap, @RequestParam(value = "name") String name, @RequestParam(value = "age") int age) {
         modelMap.addAttribute("name", name);
@@ -96,7 +106,7 @@ public class HiController {
         return "get_user";
 
     }
-
+    //返回jspview
     @RequestMapping(value = "adduser", method = RequestMethod.GET)
     public String adduser() {
 
